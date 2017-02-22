@@ -1,0 +1,12 @@
+[
+{
+    "modid": "tutorial",
+    "name": "A Random Mod lol",
+    "description": "See title.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "authors": ["Cappycot"],
+    "credits": ""
+}
+]

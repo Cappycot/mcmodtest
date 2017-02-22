@@ -1,0 +1,4 @@
+{
+  "pewfire": {"category": "players", "sounds": [{"name": "tutorial:pewfire", "stream": false}]},
+  "pewhit": {"category": "players", "sounds": [{"name": "tutorial:pewhit", "stream": false}]}
+}
