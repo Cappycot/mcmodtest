@@ -1,9 +1,15 @@
 package io.github.cappycot.tutorial.pew;
 
+import java.util.Random;
+
 import io.github.cappycot.tutorial.TutorialSounds;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockCarpet;
+import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.BlockFalling;
+import net.minecraft.block.BlockStainedGlass;
+import net.minecraft.block.BlockStainedGlassPane;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -12,6 +18,7 @@ import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
@@ -25,6 +32,7 @@ public class EntityPew extends EntityArrow {
 	public static final int MAX_BOUNCE = 16;
 	public static final float SLOW_FACTOR = 2;
 	public static final int TIME_TO_LIVE = 64;
+	public static final Random random = new Random();
 	private Entity owner = null;
 	private int bounces = 0;
 	private boolean slow = false;
@@ -77,7 +85,7 @@ public class EntityPew extends EntityArrow {
 	}
 
 	private BlockPos last = null;
-	public static final boolean KILL_OWNER = true;
+	public static final boolean KILL_OWNER = false;
 
 	@Override
 	protected void onHit(RayTraceResult result) {
@@ -99,11 +107,21 @@ public class EntityPew extends EntityArrow {
 				Block block = state.getBlock();
 				boolean bounce = true;
 				block.onEntityCollidedWithBlock(this.world, hit, state, this);
-				if (fate == Material.CAKE || fate == Material.CRAFTED_SNOW || fate == Material.GLASS
+				if (block instanceof BlockColored || block instanceof BlockStainedGlass
+						|| block instanceof BlockStainedGlassPane || block instanceof BlockCarpet) {
+					// BlockColored cblock = (BlockColored) block;
+					// state.getProperties().replace(BlockColored.COLOR,
+					// EnumDyeColor.byDyeDamage(0));
+					if (!world.isRemote) {
+						int asdf = random.nextInt(16);
+						world.setBlockState(hit,
+								state.withProperty(BlockColored.COLOR, EnumDyeColor.byDyeDamage(asdf)));
+					}
+				} else if (fate == Material.CAKE || fate == Material.CRAFTED_SNOW || fate == Material.GLASS
 						|| fate == Material.ICE || fate == Material.LEAVES || fate == Material.SNOW) {
 					world.destroyBlock(hit, false);
 					bounce = false;
-				} else if (fate == Material.CARPET || fate == Material.CIRCUITS || fate == Material.CLOTH) {
+				} else if (fate == Material.CARPET || fate == Material.CIRCUITS) {
 					world.destroyBlock(hit, true);
 					bounce = false;
 				} else if (fate == Material.PACKED_ICE) {
